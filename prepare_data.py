@@ -1,5 +1,6 @@
 import pandas as pd
 import numpy as np
+import os
 
 file_path = 'data.csv'
 data = pd.read_csv(file_path)
@@ -22,7 +23,11 @@ train_size = int(0.8 * len(data))
 train_data = data.iloc[:train_size]
 validation_data = data.iloc[train_size:]
 
-train_data.to_csv('data/train_data.csv', index=False)
-validation_data.to_csv('data/validation_data.csv', index=False)
+output_dir = 'data'
+if not os.path.exists(output_dir):
+    os.makedirs(output_dir)
+
+train_data.to_csv(os.path.join(output_dir, 'train_data.csv'), index=False)
+validation_data.to_csv(os.path.join(output_dir, 'validation_data.csv'), index=False)
 
 print("Les données ont été divisées avec succès.")

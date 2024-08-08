@@ -154,9 +154,8 @@ class NeuralNetwork:
             self.train_accuracies.append(train_accuracy)
             self.valid_accuracies.append(valid_accuracy)
 
-            if (epoch + 1) % 10 == 0:
-                print(f'Epoch {epoch+1}/{epochs}, Loss: {train_loss:.4f}, Validation Loss: {valid_loss:.4f}, Accuracy: {train_accuracy:.4f}, Validation Accuracy: {valid_accuracy:.4f}')
-                sys.stdout.flush()
+            print(f'Epoch {epoch+1}/{epochs}, Loss: {train_loss:.4f}, Validation Loss: {valid_loss:.4f}, Accuracy: {train_accuracy:.4f}, Validation Accuracy: {valid_accuracy:.4f}')
+            sys.stdout.flush()
 
             # Early stopping
             if valid_loss < best_valid_loss:
@@ -175,6 +174,8 @@ class NeuralNetwork:
             'train_accuracies': self.train_accuracies,
             'valid_accuracies': self.valid_accuracies
         }
+        if not os.path.exists(os.path.dirname(metrics_file)):
+            os.makedirs(os.path.dirname(metrics_file))
         with open(metrics_file, 'w') as f:
             json.dump(metrics, f)
 
@@ -183,7 +184,6 @@ class NeuralNetwork:
 
         plt.figure(figsize=(12, 5))
         
-        # Plot training and validation loss
         plt.subplot(1, 2, 1)
         plt.plot(epochs, self.train_losses, 'b', label='Training loss')
         plt.plot(epochs, self.valid_losses, 'r', label='Validation loss')
@@ -192,7 +192,6 @@ class NeuralNetwork:
         plt.ylabel('Loss')
         plt.legend()
 
-        # Plot training and validation accuracy
         plt.subplot(1, 2, 2)
         plt.plot(epochs, self.train_accuracies, 'b', label='Training accuracy')
         plt.plot(epochs, self.valid_accuracies, 'r', label='Validation accuracy')
@@ -218,6 +217,8 @@ class NeuralNetwork:
         model = {
             'layers': [layer.to_dict() for layer in self.layers]
         }
+        if not os.path.exists(os.path.dirname(file_path)):
+            os.makedirs(os.path.dirname(file_path))
         with open(file_path, 'w') as f:
             json.dump(model, f)
 
@@ -295,7 +296,9 @@ def main(args):
     # Afficher les courbes de perte et d'accuracy
     if args.plot_metrics:
         metrics_files = [metrics_file] + args.plot_metrics.split(',')
-        network.plot_metrics(metrics_files=metrics_files)
+        network.plot_metrics(metrics_files)
+    else:
+        network.plot_metrics()
 
     # Sauvegarder le modèle
     network.save(args.model_output)
