@@ -1,0 +1,3 @@
+DenseLayer 24 sigmoid
+DenseLayer 24 sigmoid
+DenseLayer 24 sigmoid
